@@ -1,0 +1,96 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: solr
+spec:
+  selector:
+      app: solr
+  ports:
+    - protocol: TCP
+      port: 8983
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: solr-data
+spec:
+  accessModes:
+    - ReadWriteOnce
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: "1000Mi"
+  volumeMode: Filesystem
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: solr
+spec:
+  selector:
+    matchLabels:
+      app: solr
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: solr
+        ID: "solr_service_id"
+    spec:
+      containers:
+        - name: solr
+          image: solr:8
+          imagePullPolicy: Always
+          env:
+          - name: JAVA_OPTS
+            value: "-XX:+UseConcMarkSweepGC -XX:MaxHeapFreeRatio=20 -XX:MinHeapFreeRatio=10 -XX:GCTimeRatio=20 -Dlog4j2.formatMsgNoLookups=true"
+          - name: SOLR_JAVA_MEM
+            value: "-Xms256M -Xmx512M"
+          command: []
+          resources:
+            limits:
+              memory: 2048Mi
+          stdin: true
+          tty: true
+          ports:
+          - containerPort: 8983
+          volumeMounts:
+          - mountPath: /var/solr
+            name: solr-data
+      initContainers:
+      - name: changeowner
+        image: busybox
+        command: ["sh", "-c", "chown -R 8983:8983 /var/solr"]   
+        volumeMounts:
+        - name: solr-data
+          mountPath: /var/solr
+      volumes:
+        - name: solr-data
+          persistentVolumeClaim:
+            claimName: solr-data
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: solr
+  annotations:
+    nginx.ingress.kubernetes.io/auth-type: basic
+    nginx.ingress.kubernetes.io/auth-secret: basic-auth
+    nginx.ingress.kubernetes.io/auth-realm: 'Authentication Required'
+spec:
+  rules:
+    - host: solr_public_url
+      http:
+        paths:
+          - backend:
+              service:
+                name: solr
+                port:
+                  number: 8983
+            path: /
+            pathType: Prefix

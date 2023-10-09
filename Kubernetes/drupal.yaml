@@ -1,0 +1,144 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: drupal
+spec:
+  selector:
+      app: drupal
+  ports:
+    - protocol: TCP
+      port: 80
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: drupal-data
+spec:
+  accessModes:
+    - ReadWriteOnce
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: "1000Mi"
+  volumeMode: Filesystem
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: private-files
+spec:
+  accessModes:
+    - ReadWriteOnce
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: "1000Mi"
+  volumeMode: Filesystem
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: drupal
+spec:
+  selector:
+    matchLabels:
+      app: drupal
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: drupal
+        ID: "drupal_service_id"
+    spec:
+      containers:
+      - name: drupal
+        image: drupal_image_name
+        imagePullPolicy: Always
+        env:
+        - name: MARIADB_DATABASE
+          valueFrom:
+            secretKeyRef:
+              name: mariadb
+              key: MARIADB_DATABASE
+        - name: MARIADB_USER
+          valueFrom:
+            secretKeyRef:
+              name: mariadb
+              key: MARIADB_USER
+        - name: MARIADB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mariadb
+              key: MARIADB_PASSWORD
+        - name: MARIADB_HOST
+          valueFrom:
+            secretKeyRef:
+              name: mariadb
+              key: MARIADB_HOST
+        - name: MARIADB_PORT
+          valueFrom:
+            secretKeyRef:
+              name: mariadb
+              key: MARIADB_PORT
+        command: []
+        stdin: true
+        tty: true
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - mountPath: /opt/drupal
+          name: drupal-data
+        - mountPath: /var/www/private_files
+          name: private-files
+      imagePullSecrets:
+      - name: github
+      initContainers:
+      - name: solr
+        image: busybox
+        command: ['sh', '-c', 'until nslookup solr.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for solr; sleep 2; done;']
+      - name: graphdb
+        image: busybox
+        command: ['sh', '-c', 'until nslookup graphdb.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for graphdb; sleep 2; done;']
+      - name: changeowner
+        image: busybox
+        command: ["sh", "-c", "chown -R 33:33 /opt/drupal /var/www/private_files"]   
+        volumeMounts:
+        - name: drupal-data
+          mountPath: /opt/drupal
+        - name: private-files
+          mountPath: /var/www/private_files
+      volumes:
+          - name: drupal-data
+            persistentVolumeClaim:
+              claimName: drupal-data
+          - name: private-files
+            persistentVolumeClaim:
+              claimName: private-files
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: drupal
+spec:
+  rules:
+    - host: drupal_public_url
+      http:
+        paths:
+          - backend:
+              service:
+                name: drupal
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - drupal_public_url

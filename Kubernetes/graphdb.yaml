@@ -1,0 +1,92 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: graphdb
+spec:
+  selector:
+      app: graphdb
+  ports:
+    - protocol: TCP
+      port: 7200
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: graphdb-home
+spec:
+  accessModes:
+    - ReadWriteOnce
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: "20000Mi"
+  volumeMode: Filesystem
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: graphdb
+spec:
+  selector:
+    matchLabels:
+      app: graphdb
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: graphdb
+        ID: "graphdb_service_id"
+    spec:
+      containers:
+      - name: graphdb
+        image: ontotext/graphdb:10.3.3
+        imagePullPolicy: Always
+        env:
+        - name: GRAPHDB_HEAP_SIZE
+          value: "8g"
+        - name: GDB_JAVA_OPTS
+          value: "-XX:+TieredCompilation -Xmx16G -Xms8G -XX:+UseConcMarkSweepGC -XX:MaxHeapFreeRatio=20 -XX:MinHeapFreeRatio=10 -XX:GCTimeRatio=20"
+        command: []
+        resources:
+          limits:
+            memory: 2048Mi
+        stdin: true
+        tty: true
+        ports:
+        - containerPort: 7200
+        volumeMounts:
+        - mountPath: /opt/graphdb/home
+          name: graphdb-home
+      imagePullSecrets:
+      - name: github
+      volumes:
+        - name: graphdb-home
+          persistentVolumeClaim:
+            claimName: graphdb-home
+
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: graphdb
+spec:
+  rules:
+    - host: graphdb_public_url
+      http:
+        paths:
+          - backend:
+              service:
+                name: graphdb
+                port:
+                  number: 7200
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - graphdb_public_url
