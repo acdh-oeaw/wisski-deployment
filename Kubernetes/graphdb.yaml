@@ -53,7 +53,7 @@ spec:
         command: []
         resources:
           limits:
-            memory: 2048Mi
+            memory: 16000Mi
         stdin: true
         tty: true
         ports:
