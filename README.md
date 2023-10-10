@@ -4,7 +4,7 @@ This repo is based on the [Docker WissKI](https://github.com/rnsrk/dockerWissKI.
 
 Due to specific ACDH-CH environment that is using centralized MariaDB, dedicated MariaDB Docker image is not used with this setup.
 
-Environment variables needed for WissKI stack
+Environment variables needed for the WissKI stack:
 
 |Name|Required|Type|Level|Description|
 |----|:------:|----|:---:|-----------|
