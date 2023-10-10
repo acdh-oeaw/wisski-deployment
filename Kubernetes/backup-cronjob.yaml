@@ -1,0 +1,67 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: backup
+spec:
+  storageClassName: acdh-backup
+  accessModes:
+    - ReadWriteOnce
+    - ReadWriteMany
+    - ReadOnlyMany
+  resources:
+    requests:
+      storage: "200Gi"
+  volumeMode: Filesystem
+
+---
+
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: wisski-backup
+spec:
+  schedule: "20 3 * * *" 
+  successfulJobsHistoryLimit: 1
+  suspend: false
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: wisski-backup
+            image: quay.io/toolbx-images/alpine-toolbox:3.18
+            imagePullPolicy: IfNotPresent
+            terminationMessagePath: /dev/termination-log
+            terminationMessagePolicy: File  
+            volumeMounts:
+            - mountPath: /backup
+              name: backup           
+            - mountPath: /drupal-data
+              name: drupal-data    
+            - mountPath: /graphdb-home
+              name: graphdb-home   
+            - mountPath: /private-files
+              name: private-files 
+            - mountPath: /solr-data
+              name: solr-data 
+            command:
+            - /bin/sh
+            - -c
+            - find /backup -type f -mtime +10 -delete && cd / && tar -czvf /backup/wisski-backup-$(date +"%Y_%m_%d_%H_%M").tar.gz drupal-data graphdb-home private-files solr-data  
+          volumes:
+          - name: backup 
+            persistentVolumeClaim:
+              claimName: backup
+          - name: drupal-data 
+            persistentVolumeClaim:
+              claimName: drupal-data 
+          - name: graphdb-home 
+            persistentVolumeClaim:
+              claimName: graphdb-home 
+          - name: private-files 
+            persistentVolumeClaim:
+              claimName: private-files 
+          - name: solr-data 
+            persistentVolumeClaim:
+              claimName: solr-data 
+          restartPolicy: OnFailure
