@@ -71,9 +71,8 @@ if ! [ -d /opt/drupal/web ]
 
                 echo -e "${GREEN}create and save credentials in settings.php. ${NC}"
 
-                HASH_SALT
-		sed -i -e "s/'hash_salt'] =.*/'hash_salt'] => '${HASH_SALT}';/" /settings.php
-	        sed -i -e "s/'host' =>.*/'host' => '${MARIADB_HOST}',/" /settings.php
+                sed -i -e "s/'hash_salt'] =.*/'hash_salt'] => '${HASH_SALT}';/" /settings.php
+                sed -i -e "s/'host' =>.*/'host' => '${MARIADB_HOST}',/" /settings.php
                 sed -i -e "s/'database' =>.*/'database' => '${MARIADB_DATABASE}',/" /settings.php
                 sed -i -e "s/'username' =>.*/'username' => '${MARIADB_USER}',/" /settings.php
                 sed -i -e "s/'password' =>.*/'password' => '${MARIADB_PASSWORD}',/" /settings.php
