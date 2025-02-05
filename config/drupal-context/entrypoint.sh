@@ -99,8 +99,8 @@ if ! [ -d /opt/drupal/web ]
 fi
 
 # Adjust permissions and links
-	rm -r /var/www/html
-	ln -sf /opt/drupal/web /var/www/html
+rm -r /var/www/html
+ln -sf /opt/drupal/web /var/www/html
 
 # Show apache log and keep server running
 /usr/sbin/apache2ctl -D FOREGROUND
