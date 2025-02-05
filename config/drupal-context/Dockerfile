@@ -169,11 +169,6 @@ RUN mkdir /var/www/private_files && chown -R www-data:www-data /var/www/private_
 # Add Drupal directory
 RUN mkdir /opt/drupal
 
-# Add setup directory
-RUN mkdir /setup
-# Copy drush script for adapter creation
-COPY create_adapter.php /setup
-
 # Change workdir
 WORKDIR /opt/drupal
 
