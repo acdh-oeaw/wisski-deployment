@@ -174,9 +174,6 @@ RUN mkdir /setup
 # Copy drush script for adapter creation
 COPY create_adapter.php /setup
 
-# Copy .ttl template for repo creation
-COPY create_repo.ttl /setup
-
 # Change workdir
 WORKDIR /opt/drupal
 
