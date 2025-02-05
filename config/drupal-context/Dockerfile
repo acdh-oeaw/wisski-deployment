@@ -1,4 +1,11 @@
-FROM php:8.2-apache-bullseye
+FROM php:8.3-apache-bullseye
+
+# Getting env vars
+ARG DB_NAME
+ARG DB_USER
+ARG DB_PASSWORD
+ARG DB_HOST
+ARG DB_DRIVER
 
 # Install all the stuff we need
 # Enable rewrite
@@ -7,7 +14,7 @@ RUN set -eux; \
 		a2enmod rewrite; \
 	fi
 
-# Install packages 
+# Install packages
 RUN	apt-get update; \
 	apt-get install -y --no-install-recommends \
 		apt-utils \
@@ -99,7 +106,7 @@ RUN	set -eux; \
 RUN set -eux; \
 	pecl install apcu; \
 	pecl install xdebug \
-    docker-php-ext-enable xdebug; 
+    docker-php-ext-enable xdebug;
 
 
 # Add php configs
@@ -121,7 +128,13 @@ RUN set -eux; \
 	cp src/iipsrv.fcgi /fcgi-bin/iipsrv.fcgi
 
 # Add IIPServer config
-COPY iipsrv.conf /etc/apache2/mods-available/iipsrv.conf 
+COPY iipsrv.conf /etc/apache2/mods-available/iipsrv.conf
+
+# Output buffering is not enabled. This may degrade Drupal's performance.
+# You can enable output buffering by default in your PHP settings.
+RUN { \
+	echo 'output_buffering = on'; \
+	} >> /usr/local/etc/php/conf.d/99-drupal-recommended.ini;
 
 # set recommended PHP.ini settings
 # see https://secure.php.net/manual/en/opcache.installation.php
@@ -131,7 +144,7 @@ RUN { \
 		echo 'opcache.max_accelerated_files=4000'; \
 		echo 'opcache.revalidate_freq=0'; \
 		echo 'opcache.fast_shutdown=1'; \
-	} >> /usr/local/etc/php/conf.d/opcache-recommended.ini;
+	} >> /usr/local/etc/php/conf.d/99-opcache-recommended.ini;
 
 # set memory settings for WissKi
 RUN { \
@@ -143,7 +156,7 @@ RUN { \
 		echo 'upload_max_filesize = 2048M'; \
 		echo 'max_file_uploads = 2000'; \
 		echo 'post_max_size = 2048M'; \
-	} >> /usr/local/etc/php/conf.d/wisski-settings.ini;
+	} >> /usr/local/etc/php/conf.d/99-wisski-settings.ini;
 
 # reset apt
 #	apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
@@ -156,17 +169,25 @@ RUN mkdir /var/www/private_files && chown -R www-data:www-data /var/www/private_
 # Add Drupal directory
 RUN mkdir /opt/drupal
 
+# Add setup directory
+RUN mkdir /setup
+# Copy drush script for adapter creation
+COPY create_adapter.php /setup
+
+# Copy .ttl template for repo creation
+COPY create_repo.ttl /setup
+
 # Change workdir
 WORKDIR /opt/drupal
 
 # Copy entrypoint to image
 COPY entrypoint.sh /entrypoint.sh
 
-# Copy Drupal settings from context to image 
-COPY settings.php /settings.php
-
 # (Re)link html dir
 RUN ln -sf /opt/drupal/web /var/www/html
+
+# Copy Drupal settings from context to image
+COPY settings.php /settings.php
 
 # Define entrypoint
 ENTRYPOINT /entrypoint.sh
