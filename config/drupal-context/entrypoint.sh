@@ -38,6 +38,7 @@ if ! [ -d /opt/drupal/web ]
 		# the directory - which is mounted - where drupal is installed must be empty otherwise a composer create-project is not possible (@todo: run not as admin)
 		# this means, that the mounted parts like the public files are deleted (@todo: mount the public files in a different way)
 		rm -rf /opt/drupal/*
+		rm -rf /opt/drupal.*
 
 		set -eux
 		composer create-project --no-interaction "drupal/recommended-project:${DRUPAL_VERSION}" .
