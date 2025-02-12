@@ -61,6 +61,26 @@ spec:
         image: drupal_image_name
         imagePullPolicy: Always
         env:
+        - name: DRUPAL_VERSION
+          valueFrom:
+            secretKeyRef:
+              name: mariadb
+              key: DRUPAL_VERSION
+        - name: DRUPAL_USER
+          valueFrom:
+            secretKeyRef:
+              name: mariadb
+              key: DRUPAL_USER
+        - name: SITE_NAME
+          valueFrom:
+            secretKeyRef:
+              name: mariadb
+              key: SITE_NAME
+        - name: MARIADB_DRIVER
+          valueFrom:
+            secretKeyRef:
+              name: mariadb
+              key: MARIADB_DRIVER
         - name: MARIADB_DATABASE
           valueFrom:
             secretKeyRef:
