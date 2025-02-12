@@ -21,7 +21,11 @@ Environment variables needed for the WissKI stack:
 |K8S_SECRET_MARIADB_PORT|:white_check_mark:|Secret|Repo/Env|Port of an external MariaDB service. |
 |K8S_SECRET_MARIADB_USER|:white_check_mark:|Secret|Env|Username for the MariaDB database. |  
 |K8S_SECRET_MARIADB_PASSWORD|:white_check_mark:|Secret|Env|Password for the MariaDB database. |
-|K8S_SECRET_MARIADB_DATABASE|:white_check_mark:|Secret|Env|Name of the MariaDB database to use. |  
+|K8S_SECRET_MARIADB_DATABASE|:white_check_mark:|Secret|Env|Name of the MariaDB database to use. | 
+|K8S_SECRET_DRUPAL_USER|:white_check_mark:|Variable|Env|Initial name of administrator user for Drupal. |
+|K8S_SECRET_DRUPAL_VERSION|:white_check_mark:|Variable|Env|Version of Drupal to use. |
+|K8S_SECRET_MARIADB_DRIVER|:white_check_mark:|Variable|Env|Driver type of Drupal set in the configuration (for MariaDB it is `mysql`). |
+|K8S_SECRET_SITE_NAME|:white_check_mark:|Variable|Env|Default name of the site in Druapl. |
 |auth|:white_check_mark:|Secret|Env|Should be set over the Rancher. Credentials for protecting Solr with Nginx basic auth. Needed if Solr will use public URL. | 
 
 ### How to deploy new WissKI instance

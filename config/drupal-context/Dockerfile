@@ -1,12 +1,5 @@
 FROM php:8.3-apache-bullseye
 
-# Getting env vars
-ARG DB_NAME
-ARG DB_USER
-ARG DB_PASSWORD
-ARG DB_HOST
-ARG DB_DRIVER
-
 # Install all the stuff we need
 # Enable rewrite
 RUN set -eux; \
