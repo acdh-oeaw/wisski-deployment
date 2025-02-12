@@ -34,7 +34,8 @@ RUN	apt-get update; \
 		imagemagick \
 		unzip \
 		vim \
-		wget
+		wget \
+		mariadb-client
 
 # already loaded php extensions:
 # - Core
