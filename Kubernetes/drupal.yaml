@@ -76,6 +76,11 @@ spec:
             secretKeyRef:
               name: mariadb
               key: SITE_NAME
+        - name: HASH_SALT
+          valueFrom:
+            secretKeyRef:
+              name: mariadb
+              key: HASH_SALT
         - name: MARIADB_DRIVER
           valueFrom:
             secretKeyRef:
