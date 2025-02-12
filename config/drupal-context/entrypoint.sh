@@ -92,10 +92,10 @@ if ! [ -d /opt/drupal/web ]
 		ln -s /opt/drupal/vendor/bin/drush /usr/local/bin
 
 		# Install the site
-		drush si --db-url="${MARIADB_DRIVER}://${MARIADB_USER}:${MARIADB_PASSWORD}@${MARIADB_HOST}:3306/${MARIADB_DATABASE}" --site-name="${SITE_NAME}" --account-name="${DRUPAL_USER}" --account-pass="${DRUPAL_USER_PASSWORD}"
+		drush si -y --db-url="${MARIADB_DRIVER}://${MARIADB_USER}:${MARIADB_PASSWORD}@${MARIADB_HOST}:3306/${MARIADB_DATABASE}" --site-name="${SITE_NAME}" --account-name="${DRUPAL_USER}" --account-pass="${DRUPAL_USER_PASSWORD}"
 
 		# Enable WissKI by default
-		drush en wisski
+		drush en -y wisski
 
 		# Set permissions
                 chmod -R 644 web/sites/default/settings.php
