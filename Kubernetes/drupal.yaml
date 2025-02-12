@@ -71,6 +71,11 @@ spec:
             secretKeyRef:
               name: mariadb
               key: DRUPAL_USER
+        - name: DRUPAL_USER_PASSWORD
+          valueFrom:
+             secretKeyRef:
+               name: mariadb
+               key: DRUPAL_USER_PASSWORD
         - name: SITE_NAME
           valueFrom:
             secretKeyRef:
