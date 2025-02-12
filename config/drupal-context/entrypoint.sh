@@ -33,15 +33,16 @@ if ! [ -d /opt/drupal/web ]
 			ewcomposer/unpack:dev-master"
 
 		# Install Drupal, WissKI and dependencies
+		export COMPOSER_ALLOW_SUPERUSER=1
 		set -eux
 		composer create-project --no-interaction "drupal/recommended-project:${DRUPAL_VERSION}" .
 
 		# Lets get dirty with composer
 		composer config minimum-stability dev
 
-		  # Add Drupal Recipe Composer plugin
-    composer config repositories.ewdev vcs https://gitlab.ewdev.ca/yonas.legesse/drupal-recipe-unpack.git
-    composer config allow-plugins.ewcomposer/unpack true
+		# Add Drupal Recipe Composer plugin
+		composer config repositories.ewdev vcs https://gitlab.ewdev.ca/yonas.legesse/drupal-recipe-unpack.git
+		composer config allow-plugins.ewcomposer/unpack true
 
 		yes | composer require ${REQUIREMENTS}
 
