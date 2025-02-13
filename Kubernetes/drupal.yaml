@@ -178,4 +178,4 @@ spec:
   tls:
     - hosts:
         - drupal_public_url
-      secretName: wisski-acdh-dev-tls
+      secretName: drupal_public_url
