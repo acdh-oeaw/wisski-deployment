@@ -76,7 +76,7 @@ kind: Ingress
 metadata:
   name: graphdb
   annotations: 
-    cert-manager.io/cluster-issuer: acdh-prod
+    cert-manager.io/cluster-issuer: letsencrypt-prod
     nginx.ingress.kubernetes.io/proxy-body-size: '0'
     nginx.ingress.kubernetes.io/proxy-connect-timeout: '300'
     nginx.ingress.kubernetes.io/proxy-read-timeout: '300'
