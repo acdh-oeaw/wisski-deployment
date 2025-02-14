@@ -787,4 +787,4 @@ $settings['config_sync_directory'] = 'sites/default/files/drupal_sync';
 
 $config['system.logging']['error_level'] = 'verbose';
 
-
+$settings['state_cache'] = TRUE;
