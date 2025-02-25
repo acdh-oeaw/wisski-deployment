@@ -29,7 +29,7 @@ if ! [ -d /opt/drupal/web ]
 			drupal/search_api:^1.35 \
 			drupal/search_api_solr:^4.3 \
 			drupal/viewfield:^3.0@beta \
-			drupal/wisski:3.x-dev@dev \
+			drupal/wisski:4.x-dev@dev \
 			ewcomposer/unpack:dev-master"
 
 		# Install Drupal, WissKI and dependencies
