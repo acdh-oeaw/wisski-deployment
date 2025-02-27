@@ -1,7 +1,10 @@
 name: Deploy WissKI
 
 on:
-  push: {}
+  push:
+    branches:
+      releven
+      releven-dev
   workflow_dispatch: {}
 
 
