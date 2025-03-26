@@ -71,10 +71,12 @@ if ! [ -d /opt/drupal/web ]
 		unzip web/libraries/main.zip -d web/libraries/
 		mv web/libraries/wisski-mirador-integration-main web/libraries/wisski-mirador-integration
 
-                # Fundament
-                git clone https://github.com/acdh-oeaw/fundament_drupal.git fundament
-                mv fundament /opt/drupal/web/themes/
-                sed -i -e "s|core_version_requirement: ^9|core_version_requirement: ^10|g" /opt/drupal/web/themes/fundament/fundament.info.yml
+		# Fundament
+		DRUPAL_THEME_DIR=/opt/drupal/web/themes
+		git clone https://github.com/acdh-oeaw/fundament_drupal.git $DRUPAL_THEME_DIR/fundament
+		sed -i -e "s|core_version_requirement: ^9|core_version_requirement: ^10|g" $DRUPAL_THEME_DIR/fundament/fundament.info.yml
+		# Fundament child for Releven
+		git clone -b releven-drupal-fundament https://github.com/acdh-oeaw/wisski-deployment.git $DRUPAL_THEME_DIR/fundament_releven
 
                 echo -e "${GREEN}create and save credentials in settings.php. ${NC}"
 
@@ -96,6 +98,9 @@ if ! [ -d /opt/drupal/web ]
 
 		# Enable WissKI and related plugins by default
 		drush en -y wisski geofield geofield_map
+		# set default theme
+		drush theme-enable -y fundament fundament_releven
+		drush config-set -y system.theme default fundament_releven
 
 		# Set permissions
                 chmod -R 644 web/sites/default/settings.php
