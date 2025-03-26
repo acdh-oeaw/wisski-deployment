@@ -94,8 +94,8 @@ if ! [ -d /opt/drupal/web ]
 		# Install the site
 		drush si -y --db-url="${MARIADB_DRIVER}://${MARIADB_USER}:${MARIADB_PASSWORD}@${MARIADB_HOST}:3306/${MARIADB_DATABASE}" --site-name="${SITE_NAME}" --account-name="${DRUPAL_USER}" --account-pass="${DRUPAL_USER_PASSWORD}"
 
-		# Enable WissKI by default
-		drush en -y wisski
+		# Enable WissKI and related plugins by default
+		drush en -y wisski geofield geofield_map
 
 		# Set permissions
                 chmod -R 644 web/sites/default/settings.php
