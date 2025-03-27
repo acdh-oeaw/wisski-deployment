@@ -1,0 +1,20 @@
+name: fundament_releven
+description: ACDH-CH Fundament Drupal version for Releven
+base theme: fundament
+type: theme
+core_version_requirement: ^9 || ^10
+package: acdh
+
+libraries:
+  - fundament_releven/global-css
+  - fundament_releven/global-js
+
+logo: 'themes/fundament_releven/Releven_Logo_Subline_RGB.png'
+
+regions:
+  header: 'Header'
+  breadcrumbs: 'Breadcrumbs'
+  main_navigation: 'Main Navigation'
+  content: 'Main Content'
+  footer: 'Footer'
+  start_page_content: 'Start Page Content'

@@ -1,0 +1,24 @@
+global-css:
+    css:
+        theme:
+            css/dataTables.bootstrap4.min.css: {}
+            css/jquery.dataTables.min.css: {}
+            css/font-awesome.min.css: {}
+            css/fundament.min.css: {}
+            css/style.css: {}
+
+global-js:
+    js:
+        js/fundament.min.js: {} 
+        js/jquery.dataTables.min.js: {}
+        js/dataTables.bootstrap4.min.js: {}
+        js/cookie_consent.js: {header: true}
+        
+    dependencies:
+        - core/jquery
+
+fundament.admin:
+    css:
+        theme:
+            css/fundament.admin.css: {}
+        
