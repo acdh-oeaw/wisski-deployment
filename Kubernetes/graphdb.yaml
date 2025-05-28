@@ -21,7 +21,7 @@ spec:
     - ReadWriteMany
   resources:
     requests:
-      storage: "20000Mi"
+      storage: "40Gi"
   volumeMode: Filesystem
 
 ---
