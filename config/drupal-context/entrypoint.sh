@@ -97,7 +97,7 @@ if ! [ -d /opt/drupal/web ]
 		drush si -y --db-url="${MARIADB_DRIVER}://${MARIADB_USER}:${MARIADB_PASSWORD}@${MARIADB_HOST}:3306/${MARIADB_DATABASE}" --site-name="${SITE_NAME}" --account-name="${DRUPAL_USER}" --account-pass="${DRUPAL_USER_PASSWORD}"
 
 		# Enable WissKI and related plugins by default
-		drush en -y wisski geofield geofield_map
+		drush en -y wisski geofield geofield_map search_api_solr search_api_solr_admin
 		# set default theme
 		drush theme-enable -y fundament fundament_releven
 		drush config-set -y system.theme default fundament_releven
