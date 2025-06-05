@@ -160,9 +160,9 @@ metadata:
   annotations: 
     cert-manager.io/cluster-issuer: letsencrypt-prod
     nginx.ingress.kubernetes.io/proxy-body-size: '0'
-    nginx.ingress.kubernetes.io/proxy-connect-timeout: '300'
-    nginx.ingress.kubernetes.io/proxy-read-timeout: '300'
-    nginx.ingress.kubernetes.io/proxy-send-timeout: '300'  
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: '1800'
+    nginx.ingress.kubernetes.io/proxy-read-timeout: '1800'
+    nginx.ingress.kubernetes.io/proxy-send-timeout: '1800'
 spec:
   rules:
     - host: drupal_public_url
